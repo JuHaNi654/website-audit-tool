@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	audit "github.com/JuHaNi654/web-check/pkg/audit"
+	audit "github.com/JuHaNi654/website-audit-tool/pkg/audit"
 )
 
 func RenderDocumentHeadings(m TUIMain) string {

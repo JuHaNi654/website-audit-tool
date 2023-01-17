@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/JuHaNi654/web-check/pkg/views"
+	"github.com/JuHaNi654/website-audit-tool/pkg/views"
 	"fmt"
 	"os"
 

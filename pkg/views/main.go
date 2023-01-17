@@ -3,7 +3,7 @@ package views
 import (
 	"fmt"
 
-  audit "github.com/JuHaNi654/web-check/pkg/audit"
+  audit "github.com/JuHaNi654/website-audit-tool/pkg/audit"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
