@@ -1,4 +1,4 @@
-module github.com/JuHaNi654/web-check
+module github.com/JuHaNi654/website-audit-tool
 
 go 1.19
 
