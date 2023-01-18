@@ -15,11 +15,12 @@ func main() {
     Selected: 0,
     Url: views.NewLinkInputModel(),
   }
-
+  
   p := tea.NewProgram(init, tea.WithAltScreen())
   if err := p.Start(); err != nil {
     fmt.Println("Could not start program:", err)
     os.Exit(1)
   }
+
 }
 

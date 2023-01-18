@@ -1,11 +1,20 @@
 package views
 
-import "github.com/charmbracelet/bubbles/textinput"
+import (
+	"github.com/charmbracelet/bubbles/textinput"
+)
 
 func RenderLinkInput(m TUIMain) string {
+  view := m.Url.View() + "\n\n"
+
+  if m.Error != nil {
+    msg := m.Error.Error()
+    view += ColorFg(msg, "#FF0000") 
+  }
+
   return Layout(
     "Set website url",
-    m.Url.View(),
+    view,
     m,
   )
 }

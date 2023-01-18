@@ -105,6 +105,12 @@ func scanHeadings(doc *html.Node, auditDoc *HtmlDocumentAudit) {
 }
 
 func RunAudit(url string) (*HtmlDocumentAudit, error) {
+  err := ValidateUrl(url)
+  if err != nil {
+    return nil, err
+  }
+
+
   auditDoc := newAuditHTMLDoc()
   body, err := FetchPageDocument(url)
   if err != nil {

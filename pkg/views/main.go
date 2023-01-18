@@ -2,8 +2,9 @@ package views
 
 import (
 	"fmt"
+	"os"
 
-  audit "github.com/JuHaNi654/website-audit-tool/pkg/audit"
+	audit "github.com/JuHaNi654/website-audit-tool/pkg/audit"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -37,28 +38,34 @@ type TUIMain struct {
   RenderView ViewState
   Url textinput.Model 
   Result *audit.HtmlDocumentAudit
+  Error error
 }
-
-type TUIMainErr struct {
-	text string
-	msg  error
-}
-
-type errMsg error
 
 func (m TUIMain) Init() tea.Cmd {
   return nil 
 }
 
 func (m TUIMain) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+  f, err := tea.LogToFile("debug.log", "debug")
+  if err != nil {
+    fmt.Println("fatal: ", err)
+    os.Exit(1)
+  }
+
+  defer f.Close()
+
+  if m.Error != nil {
+    f.Write([]byte(m.Error.Error()))
+    f.Write([]byte("\n"))
+  }
+
   if msg, ok := msg.(tea.KeyMsg); ok {
     k := msg.String()
     if k == "ctrl+c" || k == "esc" {
       return m, tea.Quit
     }
   }
- 
-  if m.RenderView == InputView {
+ if m.RenderView == InputView {
     return inputViewChoices(msg, &m)
   } else if m.RenderView == HeadingView {
     return defaultViewChoices(msg, &m)
@@ -107,8 +114,11 @@ func inputViewChoices(msg tea.Msg, m *TUIMain) (tea.Model, tea.Cmd) {
     case "enter":
       m.Result, err = audit.RunAudit(m.Url.Value())
       if err != nil {
-        // TODO: Handle error text
+        m.Error = err 
+        return m, nil 
       }
+
+      m.Error = nil
       m.RenderView = HeadingView
       return m, nil
     }

@@ -19,14 +19,14 @@ func FetchPageDocument(url string) ([]byte, error) {
 
   res, err := client.Do(req)
   if err != nil {
-    return nil, errors.New("Something went wrong while fetchin website document") 
+    return nil, err  
   }
 
   defer res.Body.Close()
   body, ioErr := io.ReadAll(res.Body)
 
   if ioErr != nil {
-    return nil, errors.New("Something went wrong while parsing response body")
+    return nil, errors.New("Cannot read response body from request")
   }
 
   return body, nil 
