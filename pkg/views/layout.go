@@ -10,25 +10,11 @@ var (
 func Layout(title string, content string, m TUIMain) string {
   view := "\n"
   if title != "" {
-    view += fmt.Sprintf("%s\n\n", title)
+    view += fmt.Sprintf("%s\n\n", subtle(title))
   }
 
-  view += content 
-  view += controls(m)
+  view += fmt.Sprintf("%s\n", content) 
+  view += m.Help.View(m.Keys)
 
   return view 
-}
-
-
-func controls(m TUIMain) string {
-  s := "\n\n"
-  if m.RenderView == InputView {
-    return s + subtle("esc: quit") + dot + subtle("ctrl+b: cancel") + dot + subtle("enter: continue")
-  }
-
-  if m.RenderView == HeadingView {
-    return s + subtle("0: go back")
-  }
-
-  return s + subtle("esc: quit")
 }
