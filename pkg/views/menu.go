@@ -68,7 +68,8 @@ func NewMainMenu() list.Model {
   listKeys := newListKeyMap()
 
   items := []list.Item{
-    menuItem("Print website header layout"),
+    menuItem("Print page header layout"),
+    menuItem("Crawl page links"),
   }
   
   l := list.New(items, menuItemDelegate{}, defaultWidth, defaultHeight)
