@@ -8,7 +8,7 @@ require (
 	github.com/charmbracelet/lipgloss v0.6.0
 	github.com/muesli/reflow v0.3.0
 	github.com/muesli/termenv v0.13.0
-	golang.org/x/net v0.5.0
+	golang.org/x/net v0.8.0
 )
 
 require (
@@ -23,7 +23,7 @@ require (
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/rivo/uniseg v0.4.3 // indirect
 	github.com/sahilm/fuzzy v0.1.0 // indirect
-	golang.org/x/sys v0.4.0 // indirect
-	golang.org/x/term v0.4.0 // indirect
-	golang.org/x/text v0.6.0 // indirect
+	golang.org/x/sys v0.6.0 // indirect
+	golang.org/x/term v0.6.0 // indirect
+	golang.org/x/text v0.8.0 // indirect
 )
