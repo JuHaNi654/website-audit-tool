@@ -1,8 +1,6 @@
 package audit
 
 import (
-	"fmt"
-	"strings"
 
 	"golang.org/x/net/html"
 )
@@ -52,7 +50,7 @@ func scanHeadings(doc *html.Node, auditDoc *HtmlDocumentAudit) {
   crawler = func(node *html.Node) {
     if node.Type == html.ElementNode && isHeadingElement(node.Data) {
       heading := newHeading(node.Data, getNodeText(node))
-      auditDoc.saveHeading(heading, prevHeading)
+      auditDoc.SaveHeading(heading, prevHeading)
       prevHeading = heading 
     }
 
