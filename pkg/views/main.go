@@ -2,12 +2,10 @@ package views
 
 import (
 	"fmt"
-	"os"
 
 	audit "github.com/JuHaNi654/website-audit-tool/pkg/audit"
 	vs "github.com/JuHaNi654/website-audit-tool/pkg/constant"
 	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -31,18 +29,25 @@ var titleStyle = lipgloss.NewStyle().
 	Foreground(lipgloss.Color("#FAFAFA"))
 
 type TUIMain struct {
-	Action      int8
-	Choice      int8
-	Selected    int8
-	MenuList    list.Model
-	ShowResults bool
-	BaseView    vs.ViewState
-	ViewState   vs.ViewState
-	Url         textinput.Model
-	Result      *audit.HtmlDocumentAudit
-	Keys        KeyMap
-	Help        help.Model
-	Error       error
+	action *action
+	menu   *menu
+	view   *view
+	Url    textinput.Model
+	Result *audit.HtmlDocumentAudit
+	Keys   KeyMap
+	Help   help.Model
+	Error  error
+}
+
+func NewInstance() TUIMain {
+	return TUIMain{
+		action: setupAction(),
+		menu:   newMenu(),
+		view:   initView(),
+		Url:    newLinkInputModel(),
+		Keys:   controlKeys(),
+		Help:   help.New(),
+	}
 }
 
 func (m TUIMain) Init() tea.Cmd {
@@ -52,7 +57,7 @@ func (m TUIMain) Init() tea.Cmd {
 func (m TUIMain) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.MenuList.SetWidth(msg.Width)
+		m.menu.list.SetWidth(msg.Width)
 		return m, nil
 	case tea.KeyMsg:
 		k := msg.String()
@@ -66,37 +71,21 @@ func (m TUIMain) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m TUIMain) View() string {
 	s := fmt.Sprintf("%s\n\n", titleStyle.Render("Website audit tool"))
 
-	if m.ShowResults {
-		switch m.ViewState {
+	if m.action.results {
+		switch m.view.resultsView {
 		case vs.HeadingView:
 			s += RenderDocumentHeadings(m)
 		case vs.LinkView:
 			s += renderDocumentLinks(m)
 		}
 	} else {
-		switch m.BaseView {
+		switch m.view.baseView {
 		case vs.MenuView:
-			s += m.MenuList.View()
+			s += m.menu.list.View()
 		case vs.InputView:
-			s += RenderLinkInput(m)
+			s += renderLinkInput(m)
 		}
 	}
 
 	return indent.String("\n"+s+"\n\n", 2)
-}
-
-func logErrors(e error) {
-	f, err := tea.LogToFile("debug.log", "debug")
-	if err != nil {
-		fmt.Println("fatal: ", err)
-		os.Exit(1)
-	}
-
-	defer f.Close()
-
-	if e != nil {
-		f.Write([]byte(e.Error()))
-		f.Write([]byte("\n"))
-	}
-
 }

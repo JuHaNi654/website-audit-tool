@@ -4,7 +4,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 )
 
-func RenderLinkInput(m TUIMain) string {
+func renderLinkInput(m TUIMain) string {
   view := m.Url.View() + "\n\n"
 
   if m.Error != nil {
@@ -19,7 +19,7 @@ func RenderLinkInput(m TUIMain) string {
   )
 }
 
-func NewLinkInputModel() (ti textinput.Model) {
+func newLinkInputModel() (ti textinput.Model) {
   ti = textinput.New()
   ti.Placeholder = "https://website.com"
   ti.Focus()

@@ -1,6 +1,7 @@
 package audit
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -60,6 +61,11 @@ func checkValidLinks(l *LinkNode, domain string, node *html.Node) {
 		return
 	}
 
+	if strings.HasPrefix(l.Link, "tel:") || strings.HasPrefix(l.Link, "mailto:") {
+		l.Message = "Contact link"
+		return
+	}
+
 	if strings.HasPrefix(l.Link, "#") {
 		if len(l.Link) == 1 {
 			l.Message = "Inactive anchor link"
@@ -81,7 +87,7 @@ func checkValidLinks(l *LinkNode, domain string, node *html.Node) {
 	if strings.HasPrefix(l.Link, "/") || strings.HasPrefix(l.Link, "./") {
 		mc := regexp.MustCompile(`^.`)
 		path := mc.ReplaceAllString(l.Link, "")
-		l.Link = domain + path
+		l.Link = fmt.Sprintf("%s/%s", domain, path)
 	}
 
 	// TODO should application check different domain links

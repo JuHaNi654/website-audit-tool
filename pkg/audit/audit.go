@@ -2,6 +2,7 @@ package audit
 
 import (
 	"strings"
+
 	vs "github.com/JuHaNi654/website-audit-tool/pkg/constant"
 	"golang.org/x/net/html"
 )
