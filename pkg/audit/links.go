@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"sync"
 
 	"golang.org/x/net/html"
 )
@@ -99,18 +100,23 @@ func checkValidLinks(l *LinkNode, domain string, node *html.Node) {
 }
 
 func scanLinks(doc *html.Node, auditDoc *HtmlDocumentAudit) {
-	var crawler func(*html.Node)
-	crawler = func(node *html.Node) {
+	var crawler func(*html.Node, *sync.WaitGroup)
+	var wg sync.WaitGroup
+	crawler = func(node *html.Node, wg *sync.WaitGroup) {
+		defer wg.Done()
 		if node.Type == html.ElementNode && node.Data == "a" {
 			newLink := newLinkNode(getNodeText(node), checkLinkType(node.Attr))
 			checkValidLinks(newLink, auditDoc.Domain, doc)
-			auditDoc.Links = append(auditDoc.Links, newLink)
+			auditDoc.UpdateLinkList(newLink)
 		}
 
 		for child := node.FirstChild; child != nil; child = child.NextSibling {
-			crawler(child)
+			wg.Add(1)
+			go crawler(child, wg)
 		}
 
 	}
-	crawler(doc)
+	wg.Add(1)
+	go crawler(doc, &wg)
+	wg.Wait()
 }

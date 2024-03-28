@@ -1,9 +1,12 @@
 package audit
 
+import "sync"
+
 type HtmlDocumentAudit struct {
 	Domain   string
 	Headings []*Heading
-	Links		[]*LinkNode
+	Links    []*LinkNode
+	mu       sync.Mutex
 }
 
 func (d *HtmlDocumentAudit) SaveHeading(current, previous *Heading) {
@@ -27,4 +30,10 @@ func NewAuditHTMLDoc() *HtmlDocumentAudit {
 	return &HtmlDocumentAudit{
 		Headings: []*Heading{},
 	}
+}
+
+func (d *HtmlDocumentAudit) UpdateLinkList(link *LinkNode) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	d.Links = append(d.Links, link)
 }

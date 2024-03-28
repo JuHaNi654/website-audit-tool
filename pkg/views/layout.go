@@ -1,20 +1,21 @@
 package views
 
-import "fmt"
+import (
+	"fmt"
 
-var (
-  dot    = ColorFg(" • ", "#ffffff")
-  subtle = MakeFgStyle("#ffffff", "") 
+	"github.com/charmbracelet/lipgloss"
 )
 
-func Layout(title string, content string, m TUIMain) string {
-  view := "\n"
-  if title != "" {
-    view += fmt.Sprintf("%s\n\n", subtle(title))
-  }
+var layoutStyle = lipgloss.NewStyle().Padding(0, 1)
 
-  view += fmt.Sprintf("%s\n", content) 
-  view += m.Help.View(m.Keys)
+func layout(title, content string, m Model) string {
+	view := ""
+	if title != "" {
+		view += fmt.Sprintf("%s\n", title)
+	}
 
-  return view 
+	view += fmt.Sprintf("%s\n\n", content)
+	view += m.help.View(m.keys)
+
+	return layoutStyle.Render(view)
 }

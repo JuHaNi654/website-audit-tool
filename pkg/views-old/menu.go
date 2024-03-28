@@ -3,7 +3,6 @@ package views
 import (
 	"fmt"
 	"io"
-	"strings"
 
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
@@ -11,31 +10,36 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+const (
+	defaultWidth  = 20
+	defaultHeight = 14
+)
+
 var (
-	itemStyle         = lipgloss.NewStyle().Padding(0, 1)
-	selectedItemStyle = lipgloss.NewStyle().Padding(0, 1).Foreground(lipgloss.Color("170"))
+	itemStyle         = lipgloss.NewStyle()
+	selectedItemStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("170"))
 )
 
 type menu struct {
-	items list.Model
+	list list.Model
 }
 
 func newMenu() *menu {
 	return &menu{
-		items: newList(),
+		list: newList(),
 	}
 }
 
-type menuKeyMap struct {
+type listKeyMap struct {
 	toggleSelect key.Binding
 	toggleQuit   key.Binding
 }
 
-func newKeyMap() *menuKeyMap {
-	return &menuKeyMap{
+func newListKeyMap() *listKeyMap {
+	return &listKeyMap{
 		toggleSelect: key.NewBinding(
 			key.WithKeys("enter"),
-			key.WithHelp("enter", "Select"),
+			key.WithHelp("enter", "Select action"),
 		),
 		toggleQuit: key.NewBinding(
 			key.WithKeys("esc"),
@@ -53,22 +57,18 @@ type menuItemDelegate struct{}
 func (d menuItemDelegate) Height() int                               { return 1 }
 func (d menuItemDelegate) Spacing() int                              { return 0 }
 func (d menuItemDelegate) Update(msg tea.Msg, m *list.Model) tea.Cmd { return nil }
-func (d menuItemDelegate) Render(
-	w io.Writer,
-	m list.Model,
-	index int,
-	listItem list.Item,
-) {
+func (d menuItemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
 	i, ok := listItem.(menuItem)
 	if !ok {
 		return
 	}
 
 	str := fmt.Sprintf("%s", i)
+
 	fn := itemStyle.Render
 	if index == m.Index() {
-		fn = func(s ...string) string {
-			return selectedItemStyle.Render("> " + strings.Join(s, " "))
+		fn = func(s string) string {
+			return selectedItemStyle.Render("> " + s)
 		}
 	}
 
@@ -76,15 +76,15 @@ func (d menuItemDelegate) Render(
 }
 
 func newList() list.Model {
-	listKeys := newKeyMap()
+	listKeys := newListKeyMap()
 
 	items := []list.Item{
-		menuItem("List page headings"),
-		menuItem("List page links"),
+		menuItem("Print page header layout"),
+		menuItem("Crawl page links"),
 	}
 
-	l := list.New(items, menuItemDelegate{}, 20, 30)
-	l.SetShowTitle(false)
+	l := list.New(items, menuItemDelegate{}, defaultWidth, defaultHeight)
+	l.Title = "Choose action"
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(false)
 	l.DisableQuitKeybindings()

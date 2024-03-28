@@ -6,7 +6,10 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-func SelectChoiceSettings(msg tea.Msg, m TUIMain) (tea.Model, tea.Cmd) {
+func SelectChoiceSettings(
+	msg tea.Msg,
+	m TUIMain,
+) (tea.Model, tea.Cmd) {
 	if m.action.results {
 		return defaultViewChoices(msg, &m)
 	}
